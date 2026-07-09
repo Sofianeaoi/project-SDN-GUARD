@@ -4,15 +4,19 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
+from traffic import generate_icmp
 
 
-def myNetwork():
+
+def topo():
 
     net = Mininet(
         topo=None,
         build=False,
         ipBase='192.168.2.0/24'
     )
+    
+   
 
     # Controller
     c0 = net.addController(
@@ -59,6 +63,7 @@ def myNetwork():
 
     
     net.build()
+    net.start() #Starting the network
 
 
     c0.start()
@@ -70,14 +75,26 @@ def myNetwork():
 
 
 
-    print("H1 IP:", h1.IP()) #testing if the ip config has been done 
+    print("H1 IP:", h1.IP()) #testing if the ip config has been don
+    return net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0
+        #this return is really important for the traffic later 
+         
 
     CLI(net)
+   
+        
+    
+    
 
     net.stop()
 
 
 if __name__ == '__main__':
     setLogLevel('info')
-    myNetwork()
+    net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0 = topo() #calling the function topo to create an instance of the network
+    generate_icmp(h1, h2) # Testing the ping between h1 and h2 
+    
+    
+    
+    
     
