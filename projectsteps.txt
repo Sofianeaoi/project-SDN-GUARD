@@ -1,0 +1,13 @@
+Topologie Mininet (Done)
+        ↓
+Connecting the topologie with ryu (Done)
+        ↓
+Building the traffic 
+        ↓
+analyzing the traffic with RYU
+        ↓
+generating attacks 
+        ↓
+building dataset
+        ↓
+Deep Learning
