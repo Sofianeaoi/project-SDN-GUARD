@@ -63,7 +63,7 @@ def topo():
 
     
     net.build()
-    net.start() #Starting the network
+    
 
 
     c0.start()
@@ -72,30 +72,37 @@ def topo():
     s1.start([c0])
     s2.start([c0])
     s3.start([c0])
+    net.start() #Starting the network
 
 
 
-    print("H1 IP:", h1.IP()) #testing if the ip config has been don
+    print("H1 IP:", h1.IP()) #testing if the ip config has been done
+    
+    h2.cmd('python3 -m http.server 8080&') #h2 will be considered as a server for the protoccol http
+    #and we use the port 8088 for listening  
+    
    
          
 
-    CLI(net)
    
         
     
     
 
-    net.stop()
-    return net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0
+    
+    return net
             #this return is really important for the traffic later 
 
 
 if __name__ == '__main__':
-    setLogLevel('info')
-    net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0 = topo() #calling the function topo to create an instance of the network
-    generate_icmp(h1, h2) # Testing the ping between h1 and h2 
-    
-    
-    
-    
-    
+    setLogLevel('info') 
+
+    net = topo()
+
+    try:
+        generate_icmp(net)   # ping function 
+        CLI(net)             # Opening the mininet's terminal for interaction 
+
+    finally:
+        net.stop()           # stopping the network 
+        
