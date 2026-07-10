@@ -104,5 +104,8 @@ if __name__ == '__main__':
         CLI(net)             # Opening the mininet's terminal for interaction 
 
     finally:
-        net.stop()           # stopping the network 
+        net.stop()           
+        # stopping the net
+        
+        
         

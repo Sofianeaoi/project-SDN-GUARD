@@ -31,6 +31,7 @@ def generate_icmp(net):
     else:
         print("ping failed")
         return False
+    #i redifined the function to ping and choosing the hosts only when it is called in the main
     
     
     
