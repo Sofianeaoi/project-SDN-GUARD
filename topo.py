@@ -76,8 +76,7 @@ def topo():
 
 
     print("H1 IP:", h1.IP()) #testing if the ip config has been don
-    return net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0
-        #this return is really important for the traffic later 
+   
          
 
     CLI(net)
@@ -87,6 +86,8 @@ def topo():
     
 
     net.stop()
+    return net, h1, h2, h3, h4, h5, h6, h7, h8, h9 ,s1, s2, s3, c0
+            #this return is really important for the traffic later 
 
 
 if __name__ == '__main__':
