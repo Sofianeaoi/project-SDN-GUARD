@@ -35,3 +35,8 @@ def generate_icmp(net):
     
     
     
+    
+#this functions aims to generate http traffic considering h2 as a server   
+
+def generate_http(net): 
+    
