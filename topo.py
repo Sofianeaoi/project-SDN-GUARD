@@ -101,6 +101,7 @@ if __name__ == '__main__':
 
     try:
         generate_icmp(net)   # ping function 
+        generate_http_traffic(net)  # http traffic function
         CLI(net)             # Opening the mininet's terminal for interaction 
 
     finally:

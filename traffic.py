@@ -36,4 +36,46 @@ def generate_icmp(net):
     
     
     
-#this functions aims to generate http traffic considering h2 as a server
+#this functions aims to generate http traffic considering h2 as a server   
+
+def generate_http_traffic(net):
+
+    print("Choose the source host:")
+    src_name = input("Source host: ")
+
+    while src_name not in ['h1','h3','h4','h5','h6','h7','h8','h9']:
+
+        if src_name == "h2":
+            print("h2 is the HTTP server.")
+        else:
+            print("Invalid host.")
+
+        src_name = input("Source host: ")
+
+    src = net.get(src_name)
+    dst = net.get("h2")
+
+    methods = {
+        "GET":    f"curl -X GET http://{dst.IP()}:8080",
+        "POST":   f"curl -X POST -d 'username=sofiane' http://{dst.IP()}:8080",
+        "PUT":    f"curl -X PUT -d 'new_data' http://{dst.IP()}:8080",
+        "PATCH":  f"curl -X PATCH -d 'field=value' http://{dst.IP()}:8080",
+        "DELETE": f"curl -X DELETE http://{dst.IP()}:8080",
+      
+    }
+
+    while True:
+        print("\n Enter a choice of HTTP method to send to the server (h2) (GET,POST,PUT,PATCH,DELETE)or type 'exit' to quit")
+        method = input("Method: ").upper()#converting in uppercase 
+
+        if method == "EXIT":
+            break
+
+        if method not in methods:
+            print("Invalid method.")
+            continue
+
+        response = src.cmd(methods[method])
+
+        
+        print(response)
