@@ -22,7 +22,7 @@ def topo():
     c0 = net.addController(
         'c0',
         controller=RemoteController,
-        ip='192.168.1.2',      #the ip address of the 2nd vm to link it whit ryu 
+        ip='192.168.10.2',      #the ip address of the 2nd vm to link it whit ryu 
         port=6653
     )
 
