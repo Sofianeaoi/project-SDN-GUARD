@@ -4,7 +4,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from traffic import generate_icmp
+from traffic import generate_icmp,generate_http_traffic
 
 
 
