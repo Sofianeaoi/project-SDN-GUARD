@@ -2,6 +2,7 @@
 
 
 
+
 #function to ping between 2 hosts 
 
 def generate_icmp(net):
@@ -56,11 +57,11 @@ def generate_http_traffic(net):
     dst = net.get("h2")
 
     methods = {
-        "GET":    f"curl -X GET http://{dst.IP()}:8080",
-        "POST":   f"curl -X POST -d 'username=sofiane' http://{dst.IP()}:8080",
-        "PUT":    f"curl -X PUT -d 'new_data' http://{dst.IP()}:8080",
-        "PATCH":  f"curl -X PATCH -d 'field=value' http://{dst.IP()}:8080",
-        "DELETE": f"curl -X DELETE http://{dst.IP()}:8080",
+        "GET":    f"curl -i -X GET http://{dst.IP()}:8080",
+        "POST":   f"curl -i -X POST -d 'username=sofiane' http://{dst.IP()}:8080",
+        "PUT":    f"curl -i -X PUT -d 'new_data' http://{dst.IP()}:8080",
+        "PATCH":  f"curl -i -X PATCH -d 'field=value' http://{dst.IP()}:8080",
+        "DELETE": f"curl -i -X DELETE http://{dst.IP()}:8080",
       
     }
 
@@ -76,6 +77,13 @@ def generate_http_traffic(net):
             continue
 
         response = src.cmd(methods[method])
+        if "200 OK" in response:
+            print("Request successful")
+        else:
+            print("Request failed")
 
         
         print(response)
+        
+        
+

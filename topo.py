@@ -78,8 +78,9 @@ def topo():
 
     print("H1 IP:", h1.IP()) #testing if the ip config has been done
     
-    h2.cmd('python3 -m http.server 8080&') #h2 will be considered as a server for the protoccol http
-    #and we use the port 8088 for listening  
+    h2.cmd('python3 server.py &') #h2 will be considered as a server for the protoccol http
+    #and we use the port 8080 for listening  and all the methods are in the server.py file 
+    
     
    
          
