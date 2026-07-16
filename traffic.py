@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import time 
 
 
 
@@ -86,4 +86,67 @@ def generate_http_traffic(net):
         print(response)
         
         
+def generate_ssh(net):
+    print("Choose the source for ssh")
+    src_name = input("Source host: ")
+    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
+        print("Invalid source host.")
+        src_name = input("Source host: ")
+    src = net.get(src_name)
+    
+    print("Choose the destination")
+    dst_name = input("Destination host: ")
+    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
+        print("Invalid destination host.")
+        dst_name = input("Destination host: ")
+    dst = net.get(dst_name)
+    
+    src.cmd(f'ssh {dst.IP()}')
+    print(f"SSH connection from {src_name} to {dst_name} established.")
+    
+    
+def generate_TCP(net):
+    print("Choose the source for TCP connection")
+    src_name = input("Source host: ")
+    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
+        print("Invalid source host.")
+        src_name = input("Source host: ")
+    src = net.get(src_name)
+    
+    print("Choose the destination")
+    dst_name = input("Destination host: ")
+    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
+        print("Invalid destination host.")
+        dst_name = input("Destination host: ")
+    dst = net.get(dst_name)
+    
+    # Establish a TCP connection using netcat (nc)
+    dst.cmd(f'iperf -s -p 6500 &')  # choosing the port 6500 for listening 
+    time.sleep(1)  # Give the server a moment to start
+    src.cmd(f'iperf -c {dst.IP()} -p 6500')  #starting the connection 
+    print(f"TCP connection from {src_name} to {dst_name} established on port 6500.")
+
+
+def generate_UDP(net):
+    print("Choose the source for UDP connection")
+    src_name = input("Source host: ")
+    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
+        print("Invalid source host.")
+        src_name = input("Source host: ")
+    src = net.get(src_name)
+    
+    print("Choose the destination")
+    dst_name = input("Destination host: ")
+    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
+        print("Invalid destination host.")
+        dst_name = input("Destination host: ")
+    dst = net.get(dst_name)
+    
+    # Establish a UDP connection using netcat (nc)
+    dst.cmd(f'nc -u -l 6501 &')  # choosing the port 6501 for listening 
+    time.sleep(1)  # Give the server a moment to start
+    src.cmd(f'echo "Hello, UDP!" | nc -u {dst.IP()} 6501')  #starting the connection 
+    print(f"UDP connection from {src_name} to {dst_name} established on port 6501.")
+    
+def generate_UDP(net)
 

@@ -4,7 +4,8 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from traffic import generate_icmp,generate_http_traffic
+from traffic import generate_icmp,generate_http_traffic, generate_ssh, generate_TCP
+
 
 
 
@@ -35,6 +36,7 @@ def topo():
     h1 = net.addHost('h1', ip='192.168.2.1/24')
     h2 = net.addHost('h2', ip='192.168.2.2/24')
     h3 = net.addHost('h3', ip='192.168.2.3/24')
+    
 
     h4 = net.addHost('h4', ip='192.168.2.4/24')
     h5 = net.addHost('h5', ip='192.168.2.5/24')
@@ -103,6 +105,9 @@ if __name__ == '__main__':
     try:
         generate_icmp(net)   # ping function 
         generate_http_traffic(net)  # http traffic function
+        generate_ssh(net)  # ssh traffic function
+        generate_TCP(net)  # TCP traffic function
+
         CLI(net)             # Opening the mininet's terminal for interaction 
 
     finally:
