@@ -4,7 +4,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from traffic import generate_icmp,generate_http_traffic, generate_ssh, generate_TCP
+from traffic import generate_icmp,generate_http_traffic, generate_ssh, generate_TCP,generate_UDP
 
 
 
@@ -107,6 +107,7 @@ if __name__ == '__main__':
         generate_http_traffic(net)  # http traffic function
         generate_ssh(net)  # ssh traffic function
         generate_TCP(net)  # TCP traffic function
+        generate_UDP(net)  # UDP traffic function
 
         CLI(net)             # Opening the mininet's terminal for interaction 
 

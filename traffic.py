@@ -143,10 +143,11 @@ def generate_UDP(net):
     dst = net.get(dst_name)
     
     # Establish a UDP connection using netcat (nc)
-    dst.cmd(f'nc -u -l 6501 &')  # choosing the port 6501 for listening 
-    time.sleep(1)  # Give the server a moment to start
-    src.cmd(f'echo "Hello, UDP!" | nc -u {dst.IP()} 6501')  #starting the connection 
-    print(f"UDP connection from {src_name} to {dst_name} established on port 6501.")
+    dst.cmd(f'iperf -s -u -p 9900') # for listening 
+    #the -u flag is for the udp protocole if we don't write it the default protocole will be tcp
+    src.cmd(f'iperf -c {dst.IP()} -u -p 9900') 
+    print(f"UDP connection from {src_name} to {dst_name} established on port 9900.")
+    #the choice of the port was random  
     
-def generate_UDP(net)
-
+    
+    
