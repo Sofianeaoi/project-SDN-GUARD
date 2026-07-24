@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import time 
 
+# i am using interactive mode to generate traffic but once all the traffic will be done i will use a random generator to generate traffic  for the creation of the dataset 
 
 
 #function to ping between 2 hosts 
@@ -21,6 +22,7 @@ def generate_icmp(net):
         print("Invalid destination host. Please choose from h1, h2, h3, h4, h5, h6, h7, h8, h9.")
         dst_name = input("Enter the destination host: ")
     dst = net.get(dst_name)
+    
 
     ping = src.cmd('ping -c 3   %s' %dst.IP())
     print(ping)
@@ -143,11 +145,28 @@ def generate_UDP(net):
     dst = net.get(dst_name)
     
     # Establish a UDP connection using netcat (nc)
-    dst.cmd(f'iperf -s -u -p 9900') # for listening 
+    dst.cmd(f'iperf -s -u -p 9900 &') # for listening 
     #the -u flag is for the udp protocole if we don't write it the default protocole will be tcp
     src.cmd(f'iperf -c {dst.IP()} -u -p 9900') 
     print(f"UDP connection from {src_name} to {dst_name} established on port 9900.")
-    #the choice of the port was random  
+    #the choice of the port was random
+    
+def generate_DNS(net):
+    print("Choose the source for DNS query")
+    src_name = input("Source host: ")
+    while src_name not in['h1','h2','h3','h4','h5','h7','h8','h9']:
+        print("Invalid source host.")
+        src_name = input("Source host: ")
+    src = net.get(src_name)
+    
+    dst_name="h6"
+    dst = net.get(dst_name)
+    
+    dns_data= "example.com"  #the data that will be sent to the server for the resolution
+    command=src.cmd(f'dig @{dst.IP()} {dns_data}')  #the command to send the data to the server for the resolution and the server will be considered as a DNS server
+    
+    print(command)
+    
     
     
     

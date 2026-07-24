@@ -4,7 +4,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from traffic import generate_icmp,generate_http_traffic, generate_ssh, generate_TCP,generate_UDP
+from traffic import generate_DNS,generate_icmp,generate_http_traffic, generate_ssh, generate_TCP,generate_UDP
 
 
 
@@ -12,20 +12,19 @@ from traffic import generate_icmp,generate_http_traffic, generate_ssh, generate_
 def topo():
 
     net = Mininet(
-        topo=None,
-        build=False,
-        ipBase='192.168.2.0/24'
+    topo=None,
+    build=False,
+    ipBase='10.0.0.0/24'
+    )
+    c0 = net.addController(
+    'c0',
+    controller=RemoteController,
+    ip='192.168.10.2',
+    port=6653
     )
     
    
 
-    # Controller
-    c0 = net.addController(
-        'c0',
-        controller=RemoteController,
-        ip='192.168.10.2',      #the ip address of the 2nd vm to link it whit ryu 
-        port=6653
-    )
 
     #creation of the switches 
     s1 = net.addSwitch('s1')
@@ -33,18 +32,15 @@ def topo():
     s3 = net.addSwitch('s3')
 
     #creation of the hosts
-    h1 = net.addHost('h1', ip='192.168.2.1/24')
-    h2 = net.addHost('h2', ip='192.168.2.2/24')
-    h3 = net.addHost('h3', ip='192.168.2.3/24')
-    
-
-    h4 = net.addHost('h4', ip='192.168.2.4/24')
-    h5 = net.addHost('h5', ip='192.168.2.5/24')
-    h6 = net.addHost('h6', ip='192.168.2.6/24')
-
-    h7 = net.addHost('h7', ip='192.168.2.7/24')
-    h8 = net.addHost('h8', ip='192.168.2.8/24')
-    h9 = net.addHost('h9', ip='192.168.2.9/24')
+    h1 = net.addHost('h1', ip='10.0.0.1/24')
+    h2 = net.addHost('h2', ip='10.0.0.2/24')
+    h3 = net.addHost('h3', ip='10.0.0.3/24')
+    h4 = net.addHost('h4', ip='10.0.0.4/24')    
+    h5 = net.addHost('h5', ip='10.0.0.5/24')
+    h6 = net.addHost('h6', ip='10.0.0.6/24')
+    h7 = net.addHost('h7', ip='10.0.0.7/24')
+    h8 = net.addHost('h8', ip='10.0.0.8/24')
+    h9 = net.addHost('h9', ip='10.0.0.9/24')
 
     # links between switches 
     net.addLink(s1, s2)
@@ -74,14 +70,13 @@ def topo():
     s1.start([c0])
     s2.start([c0])
     s3.start([c0])
-    net.start() #Starting the network
+    
 
 
 
     print("H1 IP:", h1.IP()) #testing if the ip config has been done
     
-    h2.cmd('python3 server.py &') #h2 will be considered as a server for the protoccol http
-    #and we use the port 8080 for listening  and all the methods are in the server.py file 
+    
     
     
    
@@ -99,8 +94,17 @@ def topo():
 
 if __name__ == '__main__':
     setLogLevel('info') 
+    net= topo()
+    http_server=net.get('h2')
+    http_server.cmd('python3 server.py &')
+     #h2 will be considered as a server for the protoccol http
+        #and we use the port 8080 for listening  and all the methods are in the server.py file 
+    dns_server=net.get('h6')
+    dns_server.cmd("dnsmasq --port= 2026 &")
+     
+    
 
-    net = topo()
+    
 
     try:
         generate_icmp(net)   # ping function 
@@ -108,6 +112,7 @@ if __name__ == '__main__':
         generate_ssh(net)  # ssh traffic function
         generate_TCP(net)  # TCP traffic function
         generate_UDP(net)  # UDP traffic function
+        generate_DNS(net)  # DNS traffic function
 
         CLI(net)             # Opening the mininet's terminal for interaction 
 
