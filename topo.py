@@ -4,7 +4,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from traffic import generate_DNS,generate_icmp,generate_http_traffic, generate_ssh, generate_TCP,generate_UDP
+from traffic import generate_traffic
 
 
 
@@ -96,23 +96,25 @@ if __name__ == '__main__':
     setLogLevel('info') 
     net= topo()
     http_server=net.get('h2')
-    http_server.cmd('python3 server.py &')
+    http_server.cmd('python3 http_server.py &')
      #h2 will be considered as a server for the protoccol http
         #and we use the port 8080 for listening  and all the methods are in the server.py file 
     dns_server=net.get('h6')
-    dns_server.cmd("dnsmasq --port=2026 &")
+    dns_server.cmd("python3 dns_server.py &")
+    # topo.py
+
+    for h in net.hosts:
+        h.cmd("iperf -s -p 6500 &") 
+        h.cmd("iperf -s -u -p 9900 &")
+    
      
     
 
     
 
     try:
-        generate_icmp(net)   # ping function 
-        generate_http_traffic(net)  # http traffic function
-        generate_ssh(net)  # ssh traffic function
-        generate_TCP(net)  # TCP traffic function
-        generate_UDP(net)  # UDP traffic function
-        generate_DNS(net)  # DNS traffic function
+        generate_traffic(net)
+        
 
         CLI(net)             # Opening the mininet's terminal for interaction 
 

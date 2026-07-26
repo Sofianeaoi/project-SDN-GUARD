@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import time 
-
+import random
 # i am using interactive mode to generate traffic but once all the traffic will be done i will use a random generator to generate traffic  for the creation of the dataset 
 
 
@@ -8,31 +8,24 @@ import time
 
 def generate_icmp(net):
     
-    print("Choose the source host for pinging:")
-    src_name = input("Enter the source host: ")
-    while src_name not in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9']:
-        print("Invalid source host. Please choose from h1, h2, h3, h4, h5, h6, h7, h8, h9.")
-        src_name = input("Enter the source host: ")
-        
+    hosts=['h1','h2','h3','h4','h5','h6','h7','h8','h9']
+    src_name=random.choice(hosts)
+
     src = net.get(src_name)
+    dst_name=None
+    while dst_name not in hosts or dst_name==src_name:
+        dst_name=random.choice(hosts)
     
-    print("Choose the destination host for pinging:")
-    dst_name = input("Enter the destination host (h1, h2, h3, h4, h5, h6, h7, h8, h9): ")
-    while dst_name not in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'] or dst_name == src_name:
-        print("Invalid destination host. Please choose from h1, h2, h3, h4, h5, h6, h7, h8, h9.")
-        dst_name = input("Enter the destination host: ")
-    dst = net.get(dst_name)
-    
+    dst=net.get(dst_name)
 
     ping = src.cmd('ping -c 3   %s' %dst.IP())
-    print(ping)
     
 
     if '0% packet loss' in ping:
-        print("ping successful")
+        
         return True
     else:
-        print("ping failed")
+        
         return False
     #i redifined the function to ping and choosing the hosts only when it is called in the main
     
@@ -43,17 +36,13 @@ def generate_icmp(net):
 
 def generate_http_traffic(net):
 
-    print("Choose the source host:")
-    src_name = input("Source host: ")
+    
+    list_http=['h1','h3','h4','h5','h6','h7','h8','h9']
+    src_name=None
+    
 
-    while src_name not in ['h1','h3','h4','h5','h6','h7','h8','h9']:
-
-        if src_name == "h2":
-            print("h2 is the HTTP server.")
-        else:
-            print("Invalid host.")
-
-        src_name = input("Source host: ")
+    while src_name not in list_http:
+        src_name=random.choice(list_http)
 
     src = net.get(src_name)
     dst = net.get("h2")
@@ -67,96 +56,67 @@ def generate_http_traffic(net):
       
     }
 
-    while True:
-        print("\n Enter a choice of HTTP method to send to the server (h2) (GET,POST,PUT,PATCH,DELETE)or type 'exit' to quit")
-        method = input("Method: ").upper()#converting in uppercase 
-
-        if method == "EXIT":
-            break
-
-        if method not in methods:
-            print("Invalid method.")
-            continue
-
-        response = src.cmd(methods[method])
-        if "200 OK" in response:
-            print("Request successful")
-        else:
-            print("Request failed")
+    method = random.choice(list(methods.keys())) #choosing a random http requete 
+    response = src.cmd(methods[method])
 
         
-        print(response)
+        
         
         
 def generate_ssh(net):
-    print("Choose the source for ssh")
-    src_name = input("Source host: ")
-    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
-        print("Invalid source host.")
-        src_name = input("Source host: ")
+    src_list= ['h1','h2','h3','h4','h5','h6','h7','h8','h9']
+    src_name= random.choice(src_list)
+
     src = net.get(src_name)
     
-    print("Choose the destination")
-    dst_name = input("Destination host: ")
-    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
-        print("Invalid destination host.")
-        dst_name = input("Destination host: ")
+    dst_name=None
+    while dst_name not in src_list or dst_name == src_name:
+        
+        dst_name = random.choice(src_list)
     dst = net.get(dst_name)
     
     src.cmd(f'ssh {dst.IP()}')
-    print(f"SSH connection from {src_name} to {dst_name} established.")
+    
     
     
 def generate_TCP(net):
-    print("Choose the source for TCP connection")
-    src_name = input("Source host: ")
-    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
-        print("Invalid source host.")
-        src_name = input("Source host: ")
+    src_list= ['h1','h2','h3','h4','h5','h6','h7','h8','h9']
+    src_name=random.choice(src_list)
     src = net.get(src_name)
-    
-    print("Choose the destination")
-    dst_name = input("Destination host: ")
-    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
-        print("Invalid destination host.")
-        dst_name = input("Destination host: ")
+
+    dst_name=None
+    while dst_name not in src_list or dst_name == src_name:
+        dst_name=random.choice(src_list)
+        
     dst = net.get(dst_name)
     
-    # Establish a TCP connection using netcat (nc)
-    dst.cmd(f'iperf -s -p 6500 &')  # choosing the port 6500 for listening 
-    time.sleep(1)  # Give the server a moment to start
+    # Establish a TCP connection using iperf 
     src.cmd(f'iperf -c {dst.IP()} -p 6500')  #starting the connection 
-    print(f"TCP connection from {src_name} to {dst_name} established on port 6500.")
+
 
 
 def generate_UDP(net):
-    print("Choose the source for UDP connection")
-    src_name = input("Source host: ")
-    while src_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9']:
-        print("Invalid source host.")
-        src_name = input("Source host: ")
+    src_list= ['h1','h2','h3','h4','h5','h6','h7','h8','h9']
+    src_name=random.choice(src_list)
+    
     src = net.get(src_name)
     
-    print("Choose the destination")
-    dst_name = input("Destination host: ")
+    dst_name=None
     while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:
-        print("Invalid destination host.")
-        dst_name = input("Destination host: ")
+        
+        dst_name = random.choice(src_list)
     dst = net.get(dst_name)
     
-    # Establish a UDP connection using netcat (nc)
-    dst.cmd(f'iperf -s -u -p 9900 &') # for listening 
-    #the -u flag is for the udp protocole if we don't write it the default protocole will be tcp
+    
+    
     src.cmd(f'iperf -c {dst.IP()} -u -p 9900') 
-    print(f"UDP connection from {src_name} to {dst_name} established on port 9900.")
     #the choice of the port was random
     
 def generate_DNS(net):
-    print("Choose the source for DNS query")
-    src_name = input("Source host: ")
-    while src_name not in['h1','h2','h3','h4','h5','h7','h8','h9']:
-        print("Invalid source host.")
-        src_name = input("Source host: ")
+    src_list=['h1','h2','h3','h4','h5','h7','h8','h9']
+    src_name = random.choice(src_list)
+
+    
     src = net.get(src_name)
     
     dst_name="h6"
@@ -167,8 +127,14 @@ def generate_DNS(net):
     
     print(command)
     
-
     
     
+def generate_traffic(net):
+    TRAFFIC_LIST=[generate_icmp,generate_ssh,generate_TCP,generate_UDP,generate_DNS,generate_http_traffic]
     
-    
+    session=500 # 500 protocoles will be generated 
+    while session>0:
+        time.sleep(1)
+        protocole_chosen=random.choice(TRAFFIC_LIST)
+        protocole_chosen(net)
+        session -=1

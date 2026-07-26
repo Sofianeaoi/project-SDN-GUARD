@@ -1,4 +1,5 @@
 from flask import Flask, request
+ 
 #the uses of the Flask framework is to create a server that can use all the http methods that are in the traffic.py file 
   
 app = Flask(__name__)
@@ -25,3 +26,5 @@ def delete():
     return "DELETE OK", 200
 
 app.run(host="0.0.0.0", port=8080)   #we used flask as a server to handle the http requests to make the traffich realistic 
+
+
