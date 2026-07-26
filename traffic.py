@@ -163,9 +163,11 @@ def generate_DNS(net):
     dst = net.get(dst_name)
     
     dns_data= "example.com"  #the data that will be sent to the server for the resolution
-    command=src.cmd(f'dig @{dst.IP()} {dns_data}')  #the command to send the data to the server for the resolution and the server will be considered as a DNS server
+    command=src.cmd(f'dig @{dst.IP()} -p 2026 {dns_data}')  #the command to send the data to the server for the resolution and the server will be considered as a DNS server
     
     print(command)
+    
+
     
     
     

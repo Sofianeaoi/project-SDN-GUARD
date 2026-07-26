@@ -100,7 +100,7 @@ if __name__ == '__main__':
      #h2 will be considered as a server for the protoccol http
         #and we use the port 8080 for listening  and all the methods are in the server.py file 
     dns_server=net.get('h6')
-    dns_server.cmd("dnsmasq --port= 2026 &")
+    dns_server.cmd("dnsmasq --port=2026 &")
      
     
 
