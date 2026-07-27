@@ -130,7 +130,7 @@ def generate_DNS(net):
     
     
 def generate_traffic(net):
-    TRAFFIC_LIST=[generate_icmp,generate_ssh,generate_TCP,generate_UDP,generate_DNS,generate_http_traffic]
+    TRAFFIC_LIST=[generate_icmp,generate_ssh,generate_TCP,generate_UDP,generate_http_traffic]
     
     session=500 # 500 protocoles will be generated 
     while session>0:
@@ -138,3 +138,7 @@ def generate_traffic(net):
         protocole_chosen=random.choice(TRAFFIC_LIST)
         protocole_chosen(net)
         session -=1
+        
+        
+#since i had probleme with DNS PROTOCOLE i decided to remove it from the traffic and keeping the script of the protocole there and the dns_server file their 
+#i will probably fix the problem and find an easier issue to integrate a dns traffic in my topology 
