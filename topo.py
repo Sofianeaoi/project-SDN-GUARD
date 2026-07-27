@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import time
 from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
@@ -101,6 +101,7 @@ if __name__ == '__main__':
         #and we use the port 8080 for listening  and all the methods are in the server.py file 
     dns_server=net.get('h6')
     dns_server.cmd("python3 dns_server.py &")
+    time.sleep(2)
     # topo.py
 
     for h in net.hosts:
