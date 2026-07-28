@@ -77,7 +77,7 @@ def generate_ssh(net):
             dst_name = random.choice(src_list)
     dst = net.get(dst_name)
     
-    src.cmd(f'ssh {dst.IP()}')
+    src.cmd(f'ssh {dst.IP()} "pwd"  >/dev/null &')
     
     
     
@@ -145,7 +145,9 @@ def generate_traffic(net):
             ATTACK_LIST=[icmp_flood,HTTP_GETFLOOD,SYN_FLOOD,ssh_flood]
             attackchosen=random.choice(ATTACK_LIST)
             attackchosen(net)
-            i==0
+            
+            
+            i=0
         session -=1
         i+=1 # we are run an attack  every 10 session 
         

