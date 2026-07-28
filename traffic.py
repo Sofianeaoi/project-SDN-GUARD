@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import time 
 import random
-# i am using interactive mode to generate traffic but once all the traffic will be done i will use a random generator to generate traffic  for the creation of the dataset 
+from attack import ssh_flood,SYN_FLOOD,HTTP_GETFLOOD,icmp_flood
+
+ 
 
 
 #function to ping between 2 hosts 
@@ -72,7 +74,7 @@ def generate_ssh(net):
     dst_name=None
     while dst_name not in src_list or dst_name == src_name:
         
-        dst_name = random.choice(src_list)
+            dst_name = random.choice(src_list)
     dst = net.get(dst_name)
     
     src.cmd(f'ssh {dst.IP()}')
@@ -91,7 +93,7 @@ def generate_TCP(net):
     dst = net.get(dst_name)
     
     # Establish a TCP connection using iperf 
-    src.cmd(f'iperf -c {dst.IP()} -p 6500')  #starting the connection 
+    src.cmd(f'iperf -c {dst.IP()} -p 6500 &')  #starting the connection 
 
 
 
@@ -109,7 +111,7 @@ def generate_UDP(net):
     
     
     
-    src.cmd(f'iperf -c {dst.IP()} -u -p 9900') 
+    src.cmd(f'iperf -c {dst.IP()} -u -p 9900 &') 
     #the choice of the port was random
     
 def generate_DNS(net):
@@ -133,11 +135,19 @@ def generate_traffic(net):
     TRAFFIC_LIST=[generate_icmp,generate_ssh,generate_TCP,generate_UDP,generate_http_traffic]
     
     session=500 # 500 protocoles will be generated 
+    i=0
     while session>0:
         time.sleep(1)
         protocole_chosen=random.choice(TRAFFIC_LIST)
         protocole_chosen(net)
+        
+        if(i==10):
+            ATTACK_LIST=[icmp_flood,HTTP_GETFLOOD,SYN_FLOOD,ssh_flood]
+            attackchosen=random.choice(ATTACK_LIST)
+            attackchosen(net)
+            i==0
         session -=1
+        i+=1 # we are run an attack  every 10 session 
         
         
 #since i had probleme with DNS PROTOCOLE i decided to remove it from the traffic and keeping the script of the protocole there and the dns_server file their 
