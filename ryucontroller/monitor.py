@@ -10,8 +10,7 @@ from ryu.lib.packet import tcp
 from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
 from ryu.ofproto import ofproto_v1_3
-from ryu.lib import dpid as dpid_lib
-from ryu.lib import stplib
+
 from ryu.lib.packet import arp
 from ryu.lib.packet import ether_types
 from ryu.lib.packet import in_proto
@@ -20,14 +19,9 @@ import os
 from datetime import datetime
 
 class TrafficCollector(app_manager.RyuApp):
-    """
-    Same behavior as simple_switch.py's SimpleSwitch13, but loop-safe:
-    uses stplib to detect/block redundant links, and listens for
-    stplib.EventPacketIn instead of the raw ofp_event.EventOFPPacketIn.
-    Collects packet-level features into a CSV file for ML training.
-    """
+
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
-    _CONTEXTS = {'stplib': stplib.Stp}
+    
 
     CSV_HEADERS = [
         "timestamp",
@@ -48,32 +42,21 @@ class TrafficCollector(app_manager.RyuApp):
 
     def __init__(self, *args, **kwargs):
         super(TrafficCollector, self).__init__(*args, **kwargs)
-        self.mac_to_port = {}
-        self.stp = kwargs['stplib']
 
-        # Optional: per-switch STP priority config (dpid -> bridge priority).
-        # Lower priority number = more likely to become the STP root.
-        config = {
-            dpid_lib.str_to_dpid('0000000000000001'):
-                {'bridge': {'priority': 0x8000}},
-            dpid_lib.str_to_dpid('0000000000000002'):
-                {'bridge': {'priority': 0x9000}},
-            dpid_lib.str_to_dpid('0000000000000003'):
-                {'bridge': {'priority': 0xa000}},
-        
-        }
-        self.stp.set_config(config)
+        self.mac_to_port = {}
 
         self.csv_file = "flow_dataset.csv"
+
+        
+        def _init_csv(self):
+              if not os.path.exists(self.csv_file):
+                    with open(self.csv_file, "w", newline="") as f:
+                        writer = csv.writer(f)
+                        writer.writerow(self.CSV_HEADERS)
+
         self._init_csv()
 
-    def _init_csv(self):
-        if not os.path.exists(self.csv_file):
-            with open(self.csv_file, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(self.CSV_HEADERS)
-
-    @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
+    @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def switch_features_handler(self, ev):
         datapath = ev.msg.datapath
         ofproto = datapath.ofproto
@@ -198,7 +181,7 @@ class TrafficCollector(app_manager.RyuApp):
                 application,
             ])
 
-    @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
+    @set_ev_cls(ofp_event,EventOFPPackentIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
         datapath = msg.datapath
@@ -301,24 +284,3 @@ class TrafficCollector(app_manager.RyuApp):
             in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
-    @set_ev_cls(stplib.EventTopologyChange, MAIN_DISPATCHER)
-    def _topology_change_handler(self, ev):
-        dp = ev.dp
-        dpid_str = dpid_lib.dpid_to_str(dp.id)
-        msg = 'Receive topology change event. Flush MAC table.'
-        self.logger.debug("[dpid=%s] %s", dpid_str, msg)
-
-        if dp.id in self.mac_to_port:
-            self.delete_flow(dp)
-            del self.mac_to_port[dp.id]
-
-    @set_ev_cls(stplib.EventPortStateChange, MAIN_DISPATCHER)
-    def _port_state_change_handler(self, ev):
-        dpid_str = dpid_lib.dpid_to_str(ev.dp.id)
-        of_state = {stplib.PORT_STATE_DISABLE: 'DISABLE',
-                    stplib.PORT_STATE_BLOCK: 'BLOCK',
-                    stplib.PORT_STATE_LISTEN: 'LISTEN',
-                    stplib.PORT_STATE_LEARN: 'LEARN',
-                    stplib.PORT_STATE_FORWARD: 'FORWARD'}
-        self.logger.debug("[dpid=%s][port=%d] state=%s",
-                          dpid_str, ev.port_no, of_state[ev.port_state])
