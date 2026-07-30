@@ -34,7 +34,7 @@ from ryu.lib.packet import ipv4
 from ryu.lib.packet import tcp
 from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
-from ryu.lib.packet import in_protofrom 
+from ryu.lib.packet import in_proto
 from scenario import get_attack
 
 
