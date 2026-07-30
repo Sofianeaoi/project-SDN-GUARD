@@ -34,7 +34,9 @@ from ryu.lib.packet import ipv4
 from ryu.lib.packet import tcp
 from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
-from ryu.lib.packet import in_proto
+from ryu.lib.packet import in_protofrom 
+from scenario import get_attack
+
 
 
 class TrafficCollector(app_manager.RyuApp):
@@ -215,8 +217,31 @@ class TrafficCollector(app_manager.RyuApp):
         
 
         # Placeholders filled later offline when building labeled datasets
-        label = self.label
-        attack_type = self.attack_type
+        attack = get_attack()
+
+        if attack == "NORMAL":
+            label = "Normal"
+            attack_type = "Normal"
+
+        elif attack == "SYN":
+            label = "Attack"
+            attack_type = "SYN_FLOOD"
+
+        elif attack == "ICMP":
+            label = "Attack"
+            attack_type = "ICMP_FLOOD"
+
+        elif attack == "HTTP":
+            label = "Attack"
+            attack_type = "HTTP_GET_FLOOD"
+
+        elif attack == "SSH":
+            label = "Attack"
+            attack_type = "SSH_FLOOD"
+
+        else:
+            label = "Normal"
+            attack_type = "Normal"
 
         row = [
             timestamp,

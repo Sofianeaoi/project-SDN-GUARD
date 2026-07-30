@@ -2,7 +2,8 @@
 import time 
 import random
 from attack import ssh_flood,SYN_FLOOD,HTTP_GETFLOOD,icmp_flood
-from monitor import set_attack
+from scenario import set_attack 
+
  
 
 
@@ -137,32 +138,40 @@ def generate_traffic(net):
     
     session=500 # 500 protocoles will be generated 
     i=0
-    while session>0:
+    while session > 0:
+
         time.sleep(1)
-        protocole_chosen=random.choice(TRAFFIC_LIST)
+
+        protocole_chosen = random.choice(TRAFFIC_LIST)
+
+        set_attack("NORMAL")
+
         protocole_chosen(net)
-        c0.set_attack("NORMAL")
-        
-        if(i==10):
-            ATTACK_LIST=[icmp_flood,HTTP_GETFLOOD,SYN_FLOOD,ssh_flood]
+
+        if i == 10:
+
             attackchosen = random.choice(ATTACK_LIST)
 
             if attackchosen == SYN_FLOOD:
-                c0.set_attack("SYN")
+                set_attack("SYN")
 
             elif attackchosen == icmp_flood:
-                c0.set_attack("ICMP")
+                set_attack("ICMP")
 
             elif attackchosen == HTTP_GETFLOOD:
-                c0.set_attack("HTTP")
+                set_attack("HTTP")
 
             elif attackchosen == ssh_flood:
-                c0.set_attack("SSH")
+                set_attack("SSH")
 
             attackchosen(net)
-            i=0
-        session -=1
-        i+=1 # we are run an attack  every 10 session 
+
+            set_attack("NORMAL")
+
+            i = 0
+
+        i += 1
+        session -= 1 # we are run an attack  every 10 session 
         
         
 #since i had probleme with DNS PROTOCOLE i decided to remove it from the traffic and keeping the script of the protocole there and the dns_server file their 
