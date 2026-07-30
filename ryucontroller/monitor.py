@@ -17,6 +17,7 @@ Run with:
 """
 
 import os
+import sys
 import csv
 from datetime import datetime
 
@@ -35,8 +36,6 @@ from ryu.lib.packet import tcp
 from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
 from ryu.lib.packet import in_proto
-import sys
-import os
 
 sys.path.append(
     os.path.abspath(
@@ -46,6 +45,7 @@ sys.path.append(
 
 # added a path to the scenario file 
 from scenario import get_attack
+
 
 
 
