@@ -35,6 +35,16 @@ from ryu.lib.packet import tcp
 from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
 from ryu.lib.packet import in_proto
+import sys
+import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "traffic")
+    )
+)
+
+# added a path to the scenario file 
 from scenario import get_attack
 
 
