@@ -2,11 +2,12 @@
 import time 
 import random
 from attack import ssh_flood,SYN_FLOOD,HTTP_GETFLOOD,icmp_flood
-
+from monitor import set_attack
  
 
 
 #function to ping between 2 hosts 
+
 
 def generate_icmp(net):
     
@@ -140,13 +141,25 @@ def generate_traffic(net):
         time.sleep(1)
         protocole_chosen=random.choice(TRAFFIC_LIST)
         protocole_chosen(net)
+        c0.set_attack("NORMAL")
         
         if(i==10):
             ATTACK_LIST=[icmp_flood,HTTP_GETFLOOD,SYN_FLOOD,ssh_flood]
-            attackchosen=random.choice(ATTACK_LIST)
+            attackchosen = random.choice(ATTACK_LIST)
+
+            if attackchosen == SYN_FLOOD:
+                c0.set_attack("SYN")
+
+            elif attackchosen == icmp_flood:
+                c0.set_attack("ICMP")
+
+            elif attackchosen == HTTP_GETFLOOD:
+                c0.set_attack("HTTP")
+
+            elif attackchosen == ssh_flood:
+                c0.set_attack("SSH")
+
             attackchosen(net)
-            
-            
             i=0
         session -=1
         i+=1 # we are run an attack  every 10 session 
