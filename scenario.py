@@ -15,3 +15,6 @@ def get_attack():
             return f.read().strip()
     except:
         return "NORMAL"
+    
+    
+#testing git 
