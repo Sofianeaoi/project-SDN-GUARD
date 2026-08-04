@@ -37,15 +37,14 @@ from ryu.lib.packet import udp
 from ryu.lib.packet import icmp
 from ryu.lib.packet import in_proto
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "traffic")
-    )
-)
+import os
+import sys
 
-# added a path to the scenario file 
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from scenario import get_attack
-
 
 
 

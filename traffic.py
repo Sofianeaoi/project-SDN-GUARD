@@ -2,11 +2,6 @@
 import time 
 import random
 from attack import ssh_flood,SYN_FLOOD,HTTP_GETFLOOD,icmp_flood
-import sys
-import os
-
-sys.path.insert(0, os.path.abspath("ryucontroller"))
-
 from scenario import set_attack
 
  
