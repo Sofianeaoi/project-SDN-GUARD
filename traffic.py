@@ -149,6 +149,7 @@ def generate_traffic(net):
         protocole_chosen(net)
 
         if i == 10:
+            ATTACK_LIST=[SYN_FLOOD,icmp_flood,HTTP_GETFLOOD,ssh_flood]
 
             attackchosen = random.choice(ATTACK_LIST)
 
