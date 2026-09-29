@@ -21,6 +21,7 @@ import sys
 import csv
 from datetime import datetime
 
+import attack
 from ryu.base import app_manager
 from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
@@ -86,7 +87,7 @@ class TrafficCollector(app_manager.RyuApp):
         self.csv_file = "flow_dataset.csv"
 
         self.label='Normal'
-        self.attack_type="Attack"
+        self.attack_type="Normal"
 
         self._init_csv()
 
@@ -226,31 +227,7 @@ class TrafficCollector(app_manager.RyuApp):
         
 
         # Placeholders filled later offline when building labeled datasets
-        attack = get_attack()
-
-        if attack == "NORMAL":
-            label = "Normal"
-            attack_type = "Normal"
-
-        elif attack == "SYN":
-            label = "Attack"
-            attack_type = "SYN_FLOOD"
-
-        elif attack == "ICMP":
-            label = "Attack"
-            attack_type = "ICMP_FLOOD"
-
-        elif attack == "HTTP":
-            label = "Attack"
-            attack_type = "HTTP_GET_FLOOD"
-
-        elif attack == "SSH":
-            label = "Attack"
-            attack_type = "SSH_FLOOD"
-
-        else:
-            label = "Normal"
-            attack_type = "Normal"
+        
 
         row = [
             timestamp,
@@ -377,10 +354,10 @@ class TrafficCollector(app_manager.RyuApp):
             in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
+    
     def set_attack(self, attack):
-
         if attack == "NORMAL":
-            self.label = "Normal"   
+            self.label = "Normal"
             self.attack_type = "Normal"
 
         elif attack == "SYN":
@@ -398,3 +375,7 @@ class TrafficCollector(app_manager.RyuApp):
         elif attack == "SSH":
             self.label = "Attack"
             self.attack_type = "SSH_FLOOD"
+
+        else:
+            self.label = "Unknown"
+            self.attack_type = "Unknown"
